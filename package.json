@@ -1,7 +1,6 @@
 {
   "name": "discordbot",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +9,19 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
+    "cors": "^2.8.5",
     "discord.js": "^12.5.3",
-    "dotenv": "^10.0.0"
-  }
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saldanaj97/DiscordBot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/saldanaj97/DiscordBot/issues"
+  },
+  "homepage": "https://github.com/saldanaj97/DiscordBot#readme",
+  "description": ""
 }
