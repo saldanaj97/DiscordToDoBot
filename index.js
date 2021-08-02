@@ -20,13 +20,7 @@ const todoSchema = new mongoose.Schema({
   task: String,
 });
 
-const discordTodo = mongoose.model("Todo", todoSchema);
-
-const todo = new discordTodo({ userID: "1234", task: "Test Task" });
-/* todo.save((err, discordTodo) => {
-  if (err) return console.error(err);
-  else console.log("Successfully added new task.");
-}); */
+const discordTodo = mongoose.model("discordTodos", todoSchema);
 
 /*--------------- Express ---------------*/
 const express = require("express");
@@ -88,7 +82,9 @@ client.on("ready", () => {
     const command = interaction.data.name.toLowerCase();
     if (!client.commands.has(command)) return;
     try {
-      await client.commands.get(command).execute(interaction, client);
+      await client.commands
+        .get(command)
+        .execute(interaction, client, discordTodo);
     } catch (error) {
       client.api.interactions(interaction.id, interaction.token).callback.post({
         data: {

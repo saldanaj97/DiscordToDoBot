@@ -10,7 +10,18 @@ module.exports = {
       required: true,
     },
   ],
-  async execute(interaction, client) {
+  async execute(interaction, client, discordTodo) {
+    const newTask = new discordTodo({
+      userID: interaction.member.user.id,
+      task: interaction.data.options[0].value,
+    });
+
+    newTask.save((err, discordTodo) => {
+      if (err) return console.error(err);
+      console.log(discordTodo.task + " has been added to database. ");
+    });
+
+    // Respond to the user on discord
     client.api.interactions(interaction.id, interaction.token).callback.post({
       data: {
         type: 4,
