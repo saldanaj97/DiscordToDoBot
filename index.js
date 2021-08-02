@@ -43,7 +43,21 @@ app.listen(port, () => {
 
 /*--------------- Discord ---------------*/
 const Discord = require("discord.js");
+const { Collection } = require("discord.js");
 const client = new Discord.Client();
+const fs = require("fs");
+
+client.commands = new Collection();
+const commandFiles = fs
+  .readdirSync("./commands")
+  .filter((file) => file.endsWith(".js"));
+
+for (const file of commandFiles) {
+  const command = require(`./commands/${file}`);
+  // set a new item in the Collection
+  // with the key as the command name and the value as the exported module
+  client.commands.set(command.name, command);
+}
 
 client.on("ready", () => {
   client.api
@@ -61,14 +75,15 @@ client.on("ready", () => {
     const command = interaction.data.name.toLowerCase();
     const args = interaction.data.options;
 
-    if (command === "addtodo") {
-      // here you could do anything. in this sample
-      // i reply with an api interaction
+    if (!client.commands.has(command)) return;
+    try {
+      await client.commands.get(command).execute(interaction, client);
+    } catch (error) {
       client.api.interactions(interaction.id, interaction.token).callback.post({
         data: {
           type: 4,
           data: {
-            content: "todo added",
+            content: "There was an error with your request. " + error,
             flags: 64,
           },
         },
@@ -78,21 +93,3 @@ client.on("ready", () => {
 });
 
 client.login(process.env.CLIENT_TOKEN);
-
-/* client.on("message", async (msg) => {
-  console.log(msg.author);
-  const command = msg.content.split(" ", 1);
-  const message = msg.content.split(command).splice(-1, 1);
-  const task = message[0].trim();
-  if (!msg.author.bot) {
-    console.log("command:", command);
-    console.log("message:", task);
-    switch (command[0]) {
-      case "!addtodo":
-        msg.author.send(
-          "'" + task + "'" + " has been added to your todo list. "
-        );
-        break;
-    }
-  }
-}); */
