@@ -1,19 +1,10 @@
-// Variables for discord.js
-const Discord = require("discord.js");
-const client = new Discord.Client();
-
+// .env
 require("dotenv").config();
 
-// Variables for express
-const express = require("express");
-const app = express();
-const port = 3000;
-
-// Variables for mongoDB
+/*--------------- MongoDB ---------------*/
 const mongoose = require("mongoose");
 const db = mongoose.connection;
 
-// Main MongoDB Functions
 mongoose.connect("mongodb://localhost/discordTodos", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -37,7 +28,11 @@ const todo = new discordTodo({ userID: "1234", task: "Test Task" });
   else console.log("Successfully added new task.");
 }); */
 
-// Main Express Functions
+/*--------------- Express ---------------*/
+const express = require("express");
+const app = express();
+const port = 3000;
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -46,12 +41,45 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
-// Main discord Functions
+/*--------------- Discord ---------------*/
+const Discord = require("discord.js");
+const client = new Discord.Client();
+
 client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+  client.api
+    .applications(client.user.id)
+    .guilds(process.env.TEST_GUILD_TOKEN)
+    .commands.post({
+      data: {
+        name: "addtodo",
+        description: "Add a task to your todo list",
+        // possible options here e.g. options: [{...}]
+      },
+    });
+
+  client.ws.on("INTERACTION_CREATE", async (interaction) => {
+    const command = interaction.data.name.toLowerCase();
+    const args = interaction.data.options;
+
+    if (command === "addtodo") {
+      // here you could do anything. in this sample
+      // i reply with an api interaction
+      client.api.interactions(interaction.id, interaction.token).callback.post({
+        data: {
+          type: 4,
+          data: {
+            content: "todo added",
+            flags: 64,
+          },
+        },
+      });
+    }
+  });
 });
 
-client.on("message", async (msg) => {
+client.login(process.env.CLIENT_TOKEN);
+
+/* client.on("message", async (msg) => {
   console.log(msg.author);
   const command = msg.content.split(" ", 1);
   const message = msg.content.split(command).splice(-1, 1);
@@ -67,6 +95,4 @@ client.on("message", async (msg) => {
         break;
     }
   }
-});
-
-client.login(process.env.CLIENT_TOKEN);
+}); */
