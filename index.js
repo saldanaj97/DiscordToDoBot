@@ -44,20 +44,44 @@ app.listen(port, () => {
 /*--------------- Discord ---------------*/
 const Discord = require("discord.js");
 const { Collection } = require("discord.js");
-const client = new Discord.Client();
+const { REST } = require("@discordjs/rest");
+const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
-
-client.commands = new Collection();
+const client = new Discord.Client();
 const commandFiles = fs
   .readdirSync("./commands")
   .filter((file) => file.endsWith(".js"));
 
+client.commands = new Collection();
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   // set a new item in the Collection
   // with the key as the command name and the value as the exported module
   client.commands.set(command.name, command);
 }
+
+const commands = client.commands.map(({ execute, ...data }) => data);
+const rest = new REST({ version: "9" }).setToken(process.env.CLIENT_TOKEN);
+
+(async () => {
+  try {
+    console.log("Started refreshing application (/) commands");
+
+    await rest.put(
+      Routes.applicationGuildCommands(
+        process.env.COMMAND_CLIENT_TOKEN,
+        process.env.TEST_GUILD_TOKEN
+      ),
+      {
+        body: commands,
+      }
+    );
+
+    console.log("Sucessfully reloaded application (/) commands.");
+  } catch (error) {
+    console.error(error);
+  }
+})();
 
 client.on("ready", () => {
   client.api
