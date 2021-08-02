@@ -86,8 +86,6 @@ const rest = new REST({ version: "9" }).setToken(process.env.CLIENT_TOKEN);
 client.on("ready", () => {
   client.ws.on("INTERACTION_CREATE", async (interaction) => {
     const command = interaction.data.name.toLowerCase();
-    const args = interaction.data.options;
-
     if (!client.commands.has(command)) return;
     try {
       await client.commands.get(command).execute(interaction, client);
