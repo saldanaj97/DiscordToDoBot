@@ -38,7 +38,7 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Express server listening at http://localhost:${port}`);
 });
 
 /*--------------- Discord ---------------*/
@@ -84,17 +84,6 @@ const rest = new REST({ version: "9" }).setToken(process.env.CLIENT_TOKEN);
 })();
 
 client.on("ready", () => {
-  client.api
-    .applications(client.user.id)
-    .guilds(process.env.TEST_GUILD_TOKEN)
-    .commands.post({
-      data: {
-        name: "addtodo",
-        description: "Add a task to your todo list",
-        // possible options here e.g. options: [{...}]
-      },
-    });
-
   client.ws.on("INTERACTION_CREATE", async (interaction) => {
     const command = interaction.data.name.toLowerCase();
     const args = interaction.data.options;
