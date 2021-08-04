@@ -10,14 +10,22 @@ module.exports = {
     var todos = [];
 
     todoList.forEach((todo) => {
-      let newTask = { name: "\u200B", value: "-" + todo.task };
+      let newTask = { name: "\u200B", value: "- \u200B " + todo.task };
       todos.push(newTask);
     });
 
-    const todoListEmbed = new MessageEmbed()
+    let todoListEmbed = new MessageEmbed()
       .setColor("#FF5733")
       .setTitle(username + "'s Todo List")
-      .addFields(todos);
+      .addFields({ name: "\u200B", value: "No tasks in your list. " });
+
+    if (!todos.length == 0) {
+      console.log("here");
+      todoListEmbed = new MessageEmbed()
+        .setColor("#FF5733")
+        .setTitle(username + "'s Todo List")
+        .addFields(todos);
+    }
 
     client.api.interactions(interaction.id, interaction.token).callback.post({
       data: {
