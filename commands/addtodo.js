@@ -1,7 +1,6 @@
 module.exports = {
   name: "addtodo",
   description: "Adds a task to your todo list",
-
   options: [
     {
       name: "input",
@@ -11,6 +10,7 @@ module.exports = {
     },
   ],
   async execute(interaction, client, discordTodo) {
+    // Create the task in the database
     const newTask = new discordTodo({
       userID: interaction.member.user.id,
       task: interaction.data.options[0].value,
