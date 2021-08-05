@@ -20,7 +20,6 @@ module.exports = {
       .addFields({ name: "\u200B", value: "No tasks in your list. " });
 
     if (!todos.length == 0) {
-      console.log("here");
       todoListEmbed = new MessageEmbed()
         .setColor("#FF5733")
         .setTitle(username + "'s Todo List")

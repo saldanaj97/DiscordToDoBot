@@ -11,26 +11,38 @@ const data = {
   ],
   async execute(interaction, client, discordTodo) {
     const memberID = interaction.member.user.id;
+    const taskToDelete = interaction.data.options[0].value;
+    const taskFound = await discordTodo
+      .find({
+        task: taskToDelete,
+      })
+      .exec();
+    var deletedMessage = "Sorry we could not find that task in your list. ";
 
-    discordTodo.deleteOne(
-      {
-        userID: memberID,
-        task: interaction.data.options[0].value,
-      },
-      (err) => {
-        if (!err) {
-          console.log("Task removed");
-        } else {
-          console.log("error");
+    if (taskFound.length > 0) {
+      discordTodo.deleteOne(
+        {
+          userID: memberID,
+          task: taskToDelete,
+        },
+        (err) => {
+          if (!err) {
+            console.log("Task removed");
+          } else {
+            console.log("error");
+          }
         }
-      }
-    );
+      );
+      deletedMessage = taskToDelete + " deleted from your todo list. ";
+    }
+
+    console.log(deletedMessage);
 
     client.api.interactions(interaction.id, interaction.token).callback.post({
       data: {
         type: 4,
         data: {
-          content: "Deleted from your todo list. ",
+          content: deletedMessage,
           flags: 64,
         },
       },
