@@ -3,8 +3,8 @@ A bot that allows you to quickly add a task to a todo list while in a meeting or
 
 ## Technologies Used
 
-- Discord and Google Calender
-- Node.js
+- Discord
+- Node.js and MongoDB
 - From npm:
 <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- discord.js
 <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- axios
