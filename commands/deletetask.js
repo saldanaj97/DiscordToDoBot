@@ -1,4 +1,4 @@
-const data = {
+module.exports = {
   name: "deletetask",
   description: "Deletes a task from your todo list. ",
   options: [
@@ -68,5 +68,3 @@ const data = {
     });
   },
 };
-
-module.exports = data;
