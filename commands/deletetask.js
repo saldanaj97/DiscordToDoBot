@@ -5,7 +5,8 @@ const data = {
     {
       name: "input",
       type: 3,
-      description: "Task to delete from your todo list. ",
+      description:
+        "The task to delete from your todo list. (ex. Finish designs) ",
       required: true,
     },
   ],
@@ -19,7 +20,7 @@ const data = {
       .exec();
     var deletedMessage = "Sorry we could not find that task in your list. ";
 
-    if (taskFound.length > 0) {
+    if (taskFound.length == 1) {
       discordTodo.deleteOne(
         {
           userID: memberID,
@@ -34,6 +35,24 @@ const data = {
         }
       );
       deletedMessage = taskToDelete + " deleted from your todo list. ";
+    } else if (taskFound.length > 1) {
+      discordTodo.deleteOne(
+        {
+          userID: memberID,
+          task: taskToDelete,
+        },
+        (err) => {
+          if (!err) {
+            console.log("Task removed");
+          } else {
+            console.log("error");
+          }
+        }
+      );
+      deletedMessage =
+        "You had multiple '" +
+        taskToDelete +
+        "' entries in your todo list so we only removed the newest entry. ";
     }
 
     console.log(deletedMessage);
