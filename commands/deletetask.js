@@ -55,8 +55,6 @@ module.exports = {
         "' entries in your todo list so we only removed the newest entry. ";
     }
 
-    console.log(deletedMessage);
-
     client.api.interactions(interaction.id, interaction.token).callback.post({
       data: {
         type: 4,
